@@ -60,33 +60,44 @@ Game.prototype.decideStartingplayer = function() {
 };
 
 // This creates an instance of the tic-tac-toe game
-Game.prototype.startGame = function() {
+Game.prototype.startGame = function(event) {
   // Verify that there are two player's defined
   // exit if not.
-  this.board = this.clearBoard();
-  this.currentPlayer = this.decideStartingplayer();
+  var game = event.data.game;
+  game.board = game.clearBoard();
+  game.currentPlayer = game.decideStartingplayer();
+  debugger;
+  $('#start_game').hide('slow');
+  $('#current_player').text('Current Player: ' + game.currentPlayer.name)
   $('.game_board').show('slow');
+  event.preventDefault();
 };
 
 Game.prototype.selectElement = function(currElement, playerClass) {
   $(currElement).addClass(playerClass);
   $(currElement).removeClass('unselected');
-  debugger;
-  this.markBoard();
+  this.markBoard($(currElement).attr('id'));
 };
 
-Game.prototype.markBoard = function(currElement) {
-
+Game.prototype.markBoard = function(boxLocation, playerNum) {
+  var rowInd, colInd, rowRe, colRe;
+  rowRe = /\d(?=box_)/;
+  colre = /\d(?=box_\d_)/;
+  debugger;
+  rowInd = rowRe.search(boxLocation);
+  colInd = colRe.search(boxLocation);
+  this.board[boxRow][boxCol] = playerNum;
 };
 
 // Takes a selected element marks correct class on the board
 // Checks for a win and ends the game if a win is achieved
 // Otherwise switches the currentPlayer for the next move
 Game.prototype.playMove = function(event) {
+  var game = event.data.game;
+  var playerClass = (game.getCurrentPlayerObject()).playerClass;
+  game.selectElement(this, playerClass);
+  game.switchCurrentPlayer();
   debugger;
-  var playerClass = (this.getCurrentPlayerObject()).playerClass;
-  this.selectElement(this, playerClass);
-  this.switchCurrentPlayer();
   event.preventDefault();
 };
 
@@ -133,6 +144,6 @@ function Player(name, playerClass, playerNum) {
 $(document).ready(function(){
   $('#player1_input_form').submit({game: TicTacToeApp.game, playerNum: 1}, TicTacToeApp.game.addPlayer);
   $('#player2_input_form').submit({game: TicTacToeApp.game, playerNum: 2}, TicTacToeApp.game.addPlayer);
-  $("#start_game").click(TicTacToeApp.game.startGame);
-  $('td').click(TicTacToeApp.game.playMove);
+  $("#start_game").click({game: TicTacToeApp.game}, TicTacToeApp.game.startGame);
+  $('td').click({game: TicTacToeApp.game}, TicTacToeApp.game.playMove);
 });
