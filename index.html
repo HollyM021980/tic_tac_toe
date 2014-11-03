@@ -10,7 +10,23 @@
 	<div id="main_container">
 		<h1 id="main_heading" class="heading" >Tic! Tac! Toe!</h1>
 		<h2 id="winning"></h2>
-		<table>
+		<h2 id="current_user"></h2>
+		<div class="user_setup">
+			<form id="user1_input_form">
+	     	<input type="text" id="user1_input" placeholder="User1 Name">
+	      <input type="submit" value="Set Player 1">
+	    </form>
+	    <form id="user2_input_form">
+	      <input type="text" id="user2_input" placeholder="User2 Name">
+	      <input type="submit" value="Set Player 2">
+    	</form>
+    	<div class="user_display">
+    		<div id="user1_display"></div>
+    		<div id="user2_display"></div>
+    		<input type="button", id="start_game", value="Start Game">
+    	</div>
+		</div>
+		<table class="game_board">
 			<tbody>
 				<tr class="box_row" >
 					<td id="box_0_0" class="box_cell unselected" data-row="0" data-col="0"></td>
