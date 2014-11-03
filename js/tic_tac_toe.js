@@ -1,38 +1,49 @@
 // TicTacToeApp object and functions.
 // This contains the main functionality of the game
-var TicTacToeApp = {};
+var TicTacToeApp = {
+  game: new Game()
+};
+
+// An intially empty game
+function Game() {
+  this.player1 = {};
+  this.player2 = {};
+  this.currentPlayer = {};
+  this.board = [];
+};
 
 // Manage the form input, once name entered
-// set generate user data, hide the form
-// and show static display of user x name
-TicTacToeApp.addUser = function(event) {
-  var userNum, userName, userClass, inputId;
-  userNum = event.data.userNum;
-  inputId = '#user' + userNum + '_input';
-  userClass = 'user' + userNum + '_selected';
-  userName = $(inputId).val();
-  TicTacToeApp.hideUserInput(userNum);
-  TicTacToeApp.showPlayerName(userNum, userName);
+// set generate player data, hide the form
+// and show static display of player x name
+Game.prototype.addPlayer = function(event) {
+  var playerNum, playerName, playerClass, inputId, game;
+  game = event.data.game;
+  playerNum = event.data.playerNum;
+  inputId = '#player' + playerNum + '_input';
+  playerClass = 'player' + playerNum + '_selected';
+  playerName = $(inputId).val();
+  game.hidePlayerInput(playerNum);
+  game.showPlayerName(playerNum, playerName);
   event.preventDefault();
-  if (userNum === 1) {
-    TicTacToeApp.user1 = new User(userName, userClass, 1);
+  if (playerNum === 1) {
+    game.player1 = new Player(playerName, playerClass, 1);
   } else {
-    TicTacToeApp.user2 = new User(userName, userClass, 2);
+    game.player2 = new Player(playerName, playerClass, 2);
   }
 };
 
-TicTacToeApp.hideUserInput = function(userNum) {
-  var formId = '#user' + userNum + '_input_form';
+Game.prototype.hidePlayerInput = function(playerNum) {
+  var formId = '#player' + playerNum + '_input_form';
   $(formId).hide('slow');
 };
 
-TicTacToeApp.showPlayerName = function(userNum, userName) {
-  var displayId = '#user' + userNum + '_display';
-  $(displayId).text('Player ' + userNum + ': ' +  userName);
+Game.prototype.showPlayerName = function(playerNum, playerName) {
+  var displayId = '#player' + playerNum + '_display';
+  $(displayId).text('Player ' + playerNum + ': ' +  playerName);
   $(displayId).show('slow');
 };
 
-TicTacToeApp.clearBoard = function() {
+Game.prototype.clearBoard = function() {
   var board = [ ["unselected", "unselected", "unselected"],
                 ["unselected", "unselected", "unselected"],
                 ["unselected", "unselected", "unselected"]
@@ -40,52 +51,55 @@ TicTacToeApp.clearBoard = function() {
   return board;
 };
 
-TicTacToeApp.decideStartingUser = function() {
+Game.prototype.decideStartingplayer = function() {
   var uNum = Math.round(Math.random() + 1);
   if (uNum === 1) {
-    return TicTacToeApp.user1;
+    return this.player1;
   };
-  return TicTacToeApp.user2;
+  return this.player2;
 };
 
 // This creates an instance of the tic-tac-toe game
-TicTacToeApp.startGame = function() {
-  // Verify that there are two user's defined
+Game.prototype.startGame = function() {
+  // Verify that there are two player's defined
   // exit if not.
-  TicTacToeApp.board = TicTacToeApp.clearBoard();
-  TicTacToeApp.currentPlayer = TicTacToeApp.decideStartingUser();
+  this.board = this.clearBoard();
+  this.currentPlayer = this.decideStartingplayer();
   $('.game_board').show('slow');
 };
 
-TicTacToeApp.selectElement = function(currElement, userClass) {
-  $(currElement).addClass(userClass);
+Game.prototype.selectElement = function(currElement, playerClass) {
+  $(currElement).addClass(playerClass);
   $(currElement).removeClass('unselected');
+  debugger;
+  this.markBoard();
 };
 
-//
-TicTacToeApp.checkWin = function(board) {
+Game.prototype.markBoard = function(currElement) {
+
 };
 
 // Takes a selected element marks correct class on the board
 // Checks for a win and ends the game if a win is achieved
 // Otherwise switches the currentPlayer for the next move
-TicTacToeApp.playMove = function(event) {
+Game.prototype.playMove = function(event) {
   debugger;
-  var playerClass = (TicTacToeApp.getCurrentPlayerObject()).userClass;
-  TicTacToeApp.selectElement(this, playerClass);
-  TicTacToeApp.switchCurrentPlayer()
+  var playerClass = (this.getCurrentPlayerObject()).playerClass;
+  this.selectElement(this, playerClass);
+  this.switchCurrentPlayer();
   event.preventDefault();
 };
 
-TicTacToeApp.getCurrentPlayerObject = function() {
+Game.prototype.getCurrentPlayerObject = function() {
   if (this.currentPlayer === 1) {
-    return this.user1;
+    return this.player1;
   } else {
-    return this.user2;
+    return this.player2;
   }
 };
 
-TicTacToeApp.switchCurrentPlayer = function(){
+
+Game.prototype.switchCurrentPlayer = function(){
   if (this.currentPlayer === 1) {
     this.currentPlayer = 2;
   } else {
@@ -93,22 +107,32 @@ TicTacToeApp.switchCurrentPlayer = function(){
   }
 };
 
-// Gives option to start another game
-TicTacToeApp.endGame = function() {
+Game.prototype.checkWin = function(board) {
+  // Check horizontal win, returns winning player
+
+  // Check vertical win, returns winning player
+
+  // Check diagnol win, returns winning player
 
 };
 
-// User object definition and functions
-function User(name, userClass, playerNum) {
+// Gives option to start another game
+Game.prototype.endGame = function() {
+
+};
+
+// player object definition and functions
+function Player(name, playerClass, playerNum) {
   this.name = name;
-  this.userClass = userClass;
+  this.playerClass = playerClass;
   this.playerNum = playerNum;
 };
 
 
+
 $(document).ready(function(){
-  $('#user1_input_form').submit({userNum: 1}, TicTacToeApp.addUser);
-  $('#user2_input_form').submit({userNum: 2}, TicTacToeApp.addUser);
-  $("#start_game").click(TicTacToeApp.startGame);
-  $('td').click(TicTacToeApp.playMove);
+  $('#player1_input_form').submit({game: TicTacToeApp.game, playerNum: 1}, TicTacToeApp.game.addPlayer);
+  $('#player2_input_form').submit({game: TicTacToeApp.game, playerNum: 2}, TicTacToeApp.game.addPlayer);
+  $("#start_game").click(TicTacToeApp.game.startGame);
+  $('td').click(TicTacToeApp.game.playMove);
 });
